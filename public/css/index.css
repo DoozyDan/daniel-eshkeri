@@ -1,0 +1,128 @@
+/*
+░░██╗░░░░██╗██╗░░        ██████╗░███████╗░██████╗░█████╗░░█████╗░░██╗░░░░░░░██╗███████╗██████╗░
+░██╔╝░░░██╔╝╚██╗░        ██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗░██║░░██╗░░██║██╔════╝██╔══██╗
+██╔╝░░░██╔╝░░╚██╗        ██║░░██║█████╗░░╚█████╗░██║░░╚═╝███████║░╚██╗████╗██╔╝█████╗░░██████╦╝
+╚██╗░░██╔╝░░░██╔╝        ██║░░██║██╔══╝░░░╚═══██╗██║░░██╗██╔══██║░░████╔═████║░██╔══╝░░██╔══██╗
+░╚██╗██╔╝░░░██╔╝░        ██████╔╝███████╗██████╔╝╚█████╔╝██║░░██║░░╚██╔╝░╚██╔╝░███████╗██████╦╝
+░░╚═╝╚═╝░░░░╚═╝░░        ╚═════╝░╚══════╝╚═════╝░░╚════╝░╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚══════╝╚═════╝░
+*/
+/** { outline: 1px solid black;*/
+/*    outline-offset: -1px;*/
+/*}*/
+
+:root {
+    --border-color: rgba(45, 45, 45, 0.5);
+    --background: rgb(30,30,30);
+    --background-accent: rgb(50, 50, 50);
+    --text: rgba(255, 255, 255, 1);
+    --font: 'Sofia Sans';
+    --accent: rgb(143,127,83);
+}
+
+* {
+    font-family: var(--font);
+    color: var(--text);
+}
+
+body {
+    background-color: var(--background);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6, p, a {
+    opacity: 1;
+    transition: 300ms ease;
+}
+
+/*custom scrollbar*/
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+}
+
+::-webkit-scrollbar-thumb {
+    background: black;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(25, 25, 25);
+    box-shadow: inset 0 0 5px rgb(30, 30, 30);
+}
+
+main {
+    height: 125vh;
+    width: 100%;
+    position: relative;
+}
+
+#hero {
+    height: 70vh;
+    width: inherit;
+    position: sticky;
+    top: 0;
+    background-color: var(--background);
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#hero img {
+    width: 300px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+#hero h1 {
+    font-size: 5vw;
+}
+
+#shade {
+    height: 55vh;
+    position: relative;
+    z-index: 2;
+    background-color: var(--background-accent);
+}
+
+#shade .container {
+    width: 100%;
+    padding-top: 3%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3vw;
+}
+
+#shade .container .card {
+    height: 45vh;
+    width: 25vw;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    background-color: var(--background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: 300ms ease-in-out;
+}
+
+#shade .container .card span {
+    font-size: 200px;
+    color: var(--accent);
+}
+
+#shade .container .card:hover {
+    transform: translateY(-35%) scale(105%);
+    box-shadow: 0 2px 35px rgba(0, 0, 0, 0.85);
+}
+
+.shrink {
+    transform: scale(95%);
+}
