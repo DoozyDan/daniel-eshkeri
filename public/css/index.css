@@ -76,22 +76,43 @@ main {
 
 #hero h1 {
     font-size: 5vw;
+    margin: 30px;
+}
+
+#hero .social-buttons-container {
+    display: flex;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(143,127,83,0.15);
+    border: 1px solid#ebe9e9;
+    padding: 25px;
+    background: transparent;
+    gap: 35px;
+}
+
+#hero .social-buttons-container a {
+    font-size: 34px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 300ms ease;
+}
+
+#hero .social-buttons-container a:hover {
+    transform: scale(125%);
 }
 
 #shade {
-    height: 55vh;
     position: relative;
     z-index: 2;
-    background-color: var(--background-accent);
 }
 
 #shade .container {
     width: 100%;
-    padding-top: 3%;
+    padding: 3% 0;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 3vw;
+    background-color: var(--background-accent);
 }
 
 #shade .container .card {
@@ -233,4 +254,18 @@ main {
 
 #shade .container .card-expand .back-btn:hover {
     transform: scale(125%);
+}
+
+@media screen and (max-width: 800px) {
+    #hero h1 {
+        font-size: 34px;
+    }
+
+    #shade .container {
+        flex-direction: column;
+    }
+
+    #shade .container .card {
+        width: 75vw;
+    }
 }
