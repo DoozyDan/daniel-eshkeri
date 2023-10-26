@@ -263,9 +263,40 @@ main {
 
     #shade .container {
         flex-direction: column;
+        padding: 8% 0;
     }
 
     #shade .container .card {
         width: 75vw;
+    }
+
+    #shade .container .card:hover {
+        transform: translateY(0) scale(100%);
+    }
+
+    #shade .container .card-expand.selected {
+        animation: top-mini 800ms ease 0s 1 normal forwards;
+    }
+
+    @keyframes top-mini {
+        0%
+        {
+            height: 45vh;
+            width: 75vw;
+            opacity: 1;
+        }
+        80% {
+            border-radius: 25px;
+        }
+        100%
+        {
+            left: 0;
+            top: 0;
+            border-radius: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--background);
+            opacity: 1;
+        }
     }
 }
