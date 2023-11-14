@@ -61,6 +61,8 @@ main {
     top: 0;
     background-color: var(--background);
     z-index: 1;
+    margin-bottom: 50px;
+    padding-top: 50px;
 
     display: flex;
     justify-content: center;
@@ -107,7 +109,7 @@ main {
 
 #shade .container {
     width: 100%;
-    padding: 3% 0;
+    padding: 30px 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -117,21 +119,17 @@ main {
 
 #shade .container .card {
     height: 45vh;
+    min-height: 375px;
     width: 25vw;
     border: 1px solid var(--border-color);
     border-radius: 15px;
     background-color: var(--background);
     display: flex;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
     flex-direction: column;
     cursor: pointer;
     transition: 300ms ease-in-out;
-}
-
-#shade .container .card h1,
-#shade .container .card-expand h1 {
-    margin-top: 100px;
 }
 
 #shade .container .card span,
@@ -234,7 +232,8 @@ main {
 
 #shade .container .card-expand-content {
     transform: translateY(70vh);
-    margin: 50px 20%;
+    margin: 50px 5vw;
+    max-width: 700px;
     transition: 600ms ease-out;
 }
 
