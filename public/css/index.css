@@ -301,6 +301,16 @@ main {
         animation: top-mini 800ms ease 0s 1 normal forwards;
     }
 
+    #shade .container .card-expand .back-btn {
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        font-size: 40px;
+        opacity: 0;
+        cursor: pointer;
+        transition: 300ms ease;
+    }
+
     @keyframes top-mini {
         0%
         {
