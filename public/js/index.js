@@ -6,10 +6,30 @@
 ░╚██╗██╔╝░░░██╔╝░        ██████╔╝███████╗██████╔╝╚█████╔╝██║░░██║░░╚██╔╝░╚██╔╝░███████╗██████╦╝
 ░░╚═╝╚═╝░░░░╚═╝░░        ╚═════╝░╚══════╝╚═════╝░░╚════╝░╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚══════╝╚═════╝░
 */
-
 let editMode = false;
 document.addEventListener("DOMContentLoaded", event => {
     const db = firebase.firestore();
+
+    const root = document.querySelector(':root');
+
+    const font = db.collection("settings").doc("font");
+
+    font.onSnapshot(doc => {
+        const data = doc.data();
+        root.style.setProperty('--font', `${data.font}`)
+    })
+
+    const colours = db.collection("settings").doc("colours")
+
+    colours.onSnapshot(doc => {
+        const data = doc.data();
+        root.style.setProperty('--text', `${data.text}`)
+        root.style.setProperty('--background', `${data.background}`)
+        root.style.setProperty('--background-accent', `${data.backgroundAccent}`)
+        root.style.setProperty('--border-colour', `${data.borderColour}`)
+        root.style.setProperty('--accent', `${data.accent}`)
+        root.style.setProperty('--link-hover', `${data.linkHover}`)
+    })
 
     const editButton = document.querySelector('#editButton');
 
@@ -89,6 +109,18 @@ document.addEventListener("DOMContentLoaded", event => {
     }).catch((error) => {
         console.log("Error getting document:", error);
     });
+    const card2Content = card2Collection.doc("content");
+    card2Content.get().then((doc) => {
+        if (doc.exists) {
+            document.querySelector('#card2Content').innerHTML = doc.data().html;
+            console.log("Document data:", doc.data());
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
+    });
 
     const card3Collection = db.collection("card3");
     const card3Heading = card3Collection.doc("heading");
@@ -99,6 +131,18 @@ document.addEventListener("DOMContentLoaded", event => {
     card3Heading.get().then((doc) => {
         if (doc.exists) {
             document.querySelector('#card3Heading').innerHTML = doc.data().text;
+            console.log("Document data:", doc.data());
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
+    });
+    const card3Content = card3Collection.doc("content");
+    card3Content.get().then((doc) => {
+        if (doc.exists) {
+            document.querySelector('#card3Content').innerHTML = doc.data().html;
             console.log("Document data:", doc.data());
         } else {
             // doc.data() will be undefined in this case
@@ -174,6 +218,29 @@ function runEditMode() {
     const db = firebase.firestore();
 
     const editButton = document.querySelector('#editButton');
+    editButton.insertAdjacentHTML("afterend", '<div class="colour-picker-container"><div><label for="text-colour">Text</label><input type="color" id="text-colour" colorpick-eyedropper-active="false"></div><div><label for="background-colour">Background</label><input type="color" id="background-colour" colorpick-eyedropper-active="false"></div><div><label for="background-accent">Background Accent</label><input type="color" id="background-accent" colorpick-eyedropper-active="false"></div><div><label for="border-colour">Border Colour</label><input type="color" id="border-colour" colorpick-eyedropper-active="false"></div><div><label for="accent">Accent</label><input type="color" id="accent" colorpick-eyedropper-active="false"></div><div><label for="link-hover">Link Hover</label><input type="color" id="link-hover" colorpick-eyedropper-active="false"></div></div>');
+    const colours = db.collection("settings").doc("colours");
+    colours.get().then((doc) => {
+        if (doc.exists) {
+            const textInput = document.querySelector('#text-colour');
+            const backgroundInput = document.querySelector('#background-colour');
+            const backgroundAccentInput = document.querySelector('#background-accent');
+            const borderColourInput = document.querySelector('#border-colour');
+            const linkHoverInput = document.querySelector('#link-hover');
+            const accentInput = document.querySelector('#accent');
+            textInput.value = doc.data().text;
+            backgroundInput.value = doc.data().background;
+            backgroundAccentInput.value = doc.data().backgroundAccent;
+            borderColourInput.value = doc.data().borderColour;
+            linkHoverInput.value = doc.data().linkHover;
+            accentInput.value = doc.data().accent;
+            setColours(textInput, backgroundInput, backgroundAccentInput, borderColourInput, linkHoverInput, accentInput);
+        } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
+    });
+
 
     if (!editButton.classList.contains("done")) {
         editMode = true;
@@ -267,30 +334,173 @@ function runEditMode() {
             card1Content.style.outline = "none";
             card1Content.style.cursor = "default";
         })
+
         card1Content.onclick = function () {
-            card1Content.innerHTML = "<textarea id='card1TextArea'></textarea>";
-            tinyMCE();
-            const card1Collection = db.collection("card1");
-            const card1ContentRef = card1Collection.doc("content");
-            card1ContentRef.get().then((doc) => {
-                if (doc.exists) {
-                    document.querySelector('#card1TextArea').innerHTML = doc.data().html;
-                    console.log("Document data:", doc.data());
-                } else {
-                    // doc.data() will be undefined in this case
-                    console.log("No such document!");
-                }
-            }).catch((error) => {
-                console.log("Error getting document:", error);
-            });
+            if (!card1Content.innerHTML.includes("<textarea")) {
+                card1Content.innerHTML = "<textarea id='card1TextArea'></textarea><button class='save-button' onclick='saveCard1ContentChanges()'>Save</button>";
+                tinyMCE('#card1TextArea');
+                const card1Collection = db.collection("card1");
+                const card1ContentRef = card1Collection.doc("content");
+                card1ContentRef.get().then((doc) => {
+                    if (doc.exists) {
+                        setTimeout(() => {
+                            tinymce.get("card1TextArea").setContent(doc.data().html);
+                        }, 300)
+                        console.log("Document data:", doc.data());
+                    } else {
+                        // doc.data() will be undefined in this case
+                        console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+            }
         }
+
+        const card2Content = document.querySelector('#card2Content');
+        card2Content.addEventListener("mouseover", () => {
+            card2Content.style.outline = "1px solid lightgrey";
+            card2Content.style.cursor = "pointer";
+        })
+        card2Content.addEventListener("mouseout", () => {
+            card2Content.style.outline = "none";
+            card2Content.style.cursor = "default";
+        })
+
+        card2Content.onclick = function () {
+            if (!card2Content.innerHTML.includes("<textarea")) {
+                card2Content.innerHTML = "<textarea id='card2TextArea'></textarea><button class='save-button' onclick='saveCard2ContentChanges()'>Save</button>";
+                tinyMCE('#card2TextArea');
+                const card2Collection = db.collection("card2");
+                const card2ContentRef = card2Collection.doc("content");
+                card2ContentRef.get().then((doc) => {
+                    if (doc.exists) {
+                        setTimeout(() => {
+                            tinymce.get("card2TextArea").setContent(doc.data().html);
+                        }, 300)
+                        console.log("Document data:", doc.data());
+                    } else {
+                        // doc.data() will be undefined in this case
+                        console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+            }
+        }
+
+        const card3Content = document.querySelector('#card3Content');
+        card3Content.addEventListener("mouseover", () => {
+            card3Content.style.outline = "1px solid lightgrey";
+            card3Content.style.cursor = "pointer";
+        })
+        card3Content.addEventListener("mouseout", () => {
+            card3Content.style.outline = "none";
+            card3Content.style.cursor = "default";
+        })
+
+        card3Content.onclick = function () {
+            if (!card3Content.innerHTML.includes("<textarea")) {
+                card3Content.innerHTML = "<textarea id='card3TextArea'></textarea><button class='save-button' onclick='saveCard3ContentChanges()'>Save</button>";
+                tinyMCE('#card3TextArea');
+                const card3Collection = db.collection("card3");
+                const card3ContentRef = card3Collection.doc("content");
+                card3ContentRef.get().then((doc) => {
+                    if (doc.exists) {
+                        setTimeout(() => {
+                            tinymce.get("card3TextArea").setContent(doc.data().html);
+                        }, 300)
+                        console.log("Document data:", doc.data());
+                    } else {
+                        // doc.data() will be undefined in this case
+                        console.log("No such document!");
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+            }
+        }
+
     } else {
         window.location.reload();
     }
 }
 
 
-function tinyMCE() {
+function saveCard1ContentChanges() {
+    const content = tinymce.get("card1TextArea").getContent();
+    const db = firebase.firestore();
+    const card1ContentRef = db.collection("card1").doc("content");
+    card1ContentRef.set({
+        html: content
+    }).then(() => {
+        card1ContentRef.get().then((doc) => {
+            if (doc.exists) {
+                tinymce.remove("#card1TextArea")
+                document.querySelector('#card1Content').innerHTML = doc.data().html;
+                console.log("Document data:", doc.data());
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+    }).catch((err) => {
+            console.error(err);
+        })
+}
+
+function saveCard2ContentChanges() {
+    const content = tinymce.get("card2TextArea").getContent();
+    const db = firebase.firestore();
+    const card2ContentRef = db.collection("card2").doc("content");
+    card2ContentRef.set({
+        html: content
+    }).then(() => {
+        card2ContentRef.get().then((doc) => {
+            if (doc.exists) {
+                tinymce.remove("#card2TextArea")
+                document.querySelector('#card2Content').innerHTML = doc.data().html;
+                console.log("Document data:", doc.data());
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+    }).catch((err) => {
+        console.error(err);
+    })
+}
+
+function saveCard3ContentChanges() {
+    const content = tinymce.get("card3TextArea").getContent();
+    const db = firebase.firestore();
+    const card3ContentRef = db.collection("card3").doc("content");
+    card3ContentRef.set({
+        html: content
+    }).then(() => {
+        card3ContentRef.get().then((doc) => {
+            if (doc.exists) {
+                tinymce.remove("#card3TextArea")
+                document.querySelector('#card3Content').innerHTML = doc.data().html;
+                console.log("Document data:", doc.data());
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+    }).catch((err) => {
+        console.error(err);
+    })
+}
+
+
+function tinyMCE(selector) {
     const uploadInlineImage = (blobInfo) => new Promise((resolve, reject) => {
         const file = blobInfo.blob();
 
@@ -312,10 +522,58 @@ function tinyMCE() {
     })
 
     tinymce.init({
-        selector: 'textarea',
+        selector: selector,
         plugins: 'anchor accordion autolink autoresize charmap codesample emoticons image link lists advlist media searchreplace table visualblocks wordcount fullscreen insertdatetime preview quickbars',
         toolbar: 'preview | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table insertdatetime | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
 
         images_upload_handler: uploadInlineImage
+    });
+}
+
+
+function setColours(textInput, backgroundInput, backgroundAccentInput, borderColourInput, linkHoverInput, accentInput) {
+    function coloursSet() {
+        const db = firebase.firestore();
+
+        const colours = db.collection('settings').doc('colours');
+
+        colours.set({
+            text: textInput.value,
+            background: backgroundInput.value,
+            backgroundAccent: backgroundAccentInput.value,
+            borderColour: borderColourInput.value,
+            linkHover: linkHoverInput.value,
+            accent: accentInput.value
+        })
+            .then(() => {
+                console.log("Successful Change");
+            })
+            .catch((error) => {
+                console.error("Error writing document: ", error);
+            });
+    }
+
+    textInput.addEventListener('change', () => {
+        coloursSet();
+    });
+
+    backgroundInput.addEventListener('change', () => {
+        coloursSet();
+    });
+
+    backgroundAccentInput.addEventListener('change', () => {
+        coloursSet();
+    });
+
+    borderColourInput.addEventListener('change', () => {
+        coloursSet();
+    });
+
+    linkHoverInput.addEventListener('change', () => {
+        coloursSet();
+    });
+
+    accentInput.addEventListener('change', () => {
+        coloursSet();
     });
 }

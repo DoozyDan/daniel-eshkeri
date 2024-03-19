@@ -10,16 +10,6 @@
 /*    outline-offset: -1px;*/
 /*}*/
 
-:root {
-    --border-color: rgba(45, 45, 45, 0.5);
-    --background: rgb(30,30,30);
-    --background-accent: rgb(50, 50, 50);
-    --text: rgba(255, 255, 255, 1);
-    --font: 'Sofia Sans';
-    --accent: rgb(143,127,83);
-    --link-hover: rgb(210, 170, 69);
-}
-
 * {
     font-family: var(--font);
     color: var(--text);
@@ -250,6 +240,11 @@ main {
     transition: 600ms ease-out;
 }
 
+#shade .container .card-expand-content .tox-tinymce {
+    width: max-content;
+    max-width: inherit;
+}
+
 #shade .container .card-expand-content.translateY-0 {
     transform: translateY(0);
 }
@@ -293,10 +288,34 @@ main {
     color: black;
     padding: 5px 20px;
     font-size: 22px;
+    cursor: pointer;
 }
 
 .hidden {
     visibility: hidden;
+}
+
+.save-button {
+    margin-top: 10px;
+    color: black;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.colour-picker-container {
+    position: fixed;
+    z-index: 999;
+    top: 70px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.colour-picker-container input {
+    margin-left: 15px;
 }
 
 @media screen and (max-width: 800px) {
@@ -329,6 +348,10 @@ main {
         opacity: 0;
         cursor: pointer;
         transition: 300ms ease;
+    }
+
+    #shade .container .card-expand-content .tox-tinymce {
+        width: 300px;
     }
 
     @keyframes top-mini {
