@@ -1,0 +1,110 @@
+/*
+░░██╗░░░░██╗██╗░░        ██████╗░███████╗░██████╗░█████╗░░█████╗░░██╗░░░░░░░██╗███████╗██████╗░
+░██╔╝░░░██╔╝╚██╗░        ██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗░██║░░██╗░░██║██╔════╝██╔══██╗
+██╔╝░░░██╔╝░░╚██╗        ██║░░██║█████╗░░╚█████╗░██║░░╚═╝███████║░╚██╗████╗██╔╝█████╗░░██████╦╝
+╚██╗░░██╔╝░░░██╔╝        ██║░░██║██╔══╝░░░╚═══██╗██║░░██╗██╔══██║░░████╔═████║░██╔══╝░░██╔══██╗
+░╚██╗██╔╝░░░██╔╝░        ██████╔╝███████╗██████╔╝╚█████╔╝██║░░██║░░╚██╔╝░╚██╔╝░███████╗██████╦╝
+░░╚═╝╚═╝░░░░╚═╝░░        ╚═════╝░╚══════╝╚═════╝░░╚════╝░╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚══════╝╚═════╝░
+*/
+/** { outline: 1px solid black;*/
+/*    outline-offset: -1px;*/
+/*}*/
+
+:root {
+    --border-color: rgba(45, 45, 45, 0.5);
+    --background: rgb(30,30,30);
+    --background-accent: rgb(50, 50, 50);
+    --text: rgba(255, 255, 255, 1);
+    --font: 'Sofia Sans';
+    --accent: rgb(143,127,83);
+    --link-hover: rgb(210, 170, 69);
+}
+
+* {
+    font-family: var(--font);
+    color: var(--text);
+}
+
+body {
+    background-color: var(--background);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/*custom scrollbar*/
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+}
+
+::-webkit-scrollbar-thumb {
+    background: black;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(25, 25, 25);
+    box-shadow: inset 0 0 5px rgb(30, 30, 30);
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.login-container,
+.logout-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+    width: 300px;
+}
+
+h1 {
+    font-family: var(--font);
+    color: var(--text);
+}
+
+input[type=email], input[type=password]{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 1px;
+    font-family: var(--font);
+    color: var(--background)
+}
+
+input[type=email]:focus, input[type=password]:focus {
+    outline: 2px solid #ccc;
+    color: var(--background)
+}
+
+
+#login-btn,
+#logout-btn {
+    background-color: var(--primary);
+    border: 3px solid rgb(0, 0, 0);
+    font-family: var(--font);
+    color: var(--text);
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+    transition: 300ms ease;
+}
+
+#login-btn:hover,
+#logout-btn:hover {
+    background-color: white;
+    color: var(--accent);
+    transform: scale(105%);
+    border-color: var(--accent);
+}

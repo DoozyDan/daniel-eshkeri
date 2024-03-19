@@ -74,7 +74,12 @@ main {
 #hero img {
     width: 300px;
     aspect-ratio: 1;
+    object-fit: cover;
     border-radius: 50%;
+}
+
+#hero img.loading {
+    background: transparent url(../img/loading.gif) no-repeat scroll center center;
 }
 
 #hero h1 {
@@ -133,15 +138,14 @@ main {
     transition: 300ms ease-in-out;
 }
 
-#shade .container .card span,
-#shade .container .card-expand span {
-    font-size: 200px;
-    color: var(--accent);
-    max-width: 100%;
-}
+/*.card span,*/
+/*.card-expand span {*/
+/*    font-size: 200px;*/
 
-#shade .container .card span svg,
-#shade .container .card-expand span svg {
+/*}*/
+
+#shade .container .card span .cardIcon,
+#shade .container .card-expand span .cardIcon {
     max-width: calc(100% - 50px);
     max-height: 200px;
     margin: 25px 25px 0;
@@ -258,6 +262,8 @@ main {
     opacity: 0;
     cursor: pointer;
     transition: 300ms ease;
+    color: var(--accent);
+    max-width: 100%;
 }
 
 #shade .container .card-expand .back-btn:hover {
@@ -277,6 +283,20 @@ main {
 
 .text-link:hover {
     color: var(--link-hover);
+}
+
+.edit-button {
+    position: fixed;
+    z-index: 999;
+    top: 10px;
+    right: 10px;
+    color: black;
+    padding: 5px 20px;
+    font-size: 22px;
+}
+
+.hidden {
+    visibility: hidden;
 }
 
 @media screen and (max-width: 800px) {
