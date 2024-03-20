@@ -62,6 +62,19 @@ document.addEventListener("DOMContentLoaded", event => {
        document.querySelector('#heroImage').src = doc.data().source;
     });
 
+    const socialButtonsCollection = db.collection("socialButtons");
+    const socialButtonsContainer = document.querySelector('#socialButtons');
+    socialButtonsCollection.onSnapshot((querySnapshot) => {
+        socialButtonsContainer.innerHTML = ``;
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+                socialButtonsContainer.innerHTML += `
+                <a href="${doc.data().link}" target="${doc.data().target}" class="fa-brands ${doc.data().icon}"></a>
+            `
+            });
+        })
+
     const card1Collection = db.collection("card1");
     const card1Heading = card1Collection.doc("heading");
     card1Heading.onSnapshot((doc) => {
@@ -241,7 +254,6 @@ function runEditMode() {
         }
     });
 
-
     if (!editButton.classList.contains("done")) {
         editMode = true;
         console.log(editMode)
@@ -324,6 +336,101 @@ function runEditMode() {
                 heroImage.classList.add("loading")
             })
         }
+
+        const socialButtonsContainer = document.querySelector('#socialButtons');
+        socialButtonsContainer.addEventListener("mouseover", () => {
+            socialButtonsContainer.style.outline = "3px solid lightgrey";
+            socialButtonsContainer.style.cursor = "pointer";
+        })
+        socialButtonsContainer.addEventListener("mouseout", () => {
+            socialButtonsContainer.style.outline = "none";
+            socialButtonsContainer.style.cursor = "default";
+        })
+        socialButtonsContainer.onclick = function () {
+            socialButtonsContainer.insertAdjacentHTML("afterend", "<div id=\"socialButtonsEditModal\">\n" +
+                "                <div id=\"socialButtonsEditModalheader\">|||</div>\n" +
+                "                <div id=\"savedLinks\">\n" +
+                "                    \n" +
+                "                </div>\n" +
+                "                <button id=\"socialButtonsAddNew\">+</button>\n" +
+                "                <button id=\"socialButtonsSaveEdits\">Save</button>\n" +
+                "            </div>");
+            dragElement(document.getElementById("socialButtonsEditModal"))
+            const savedLinksDiv = document.querySelector('#savedLinks');
+            const socialButtonsCollection = db.collection("socialButtons");
+            socialButtonsCollection.get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        // doc.data() is never undefined for query doc snapshots
+                        console.log(doc.id, " => ", doc.data());
+                        savedLinksDiv.innerHTML += `
+                            <div id="${doc.id}" class="singleLinkDiv">
+                                <div>
+                                    <label for="linkInput">Link</label>
+                                    <input id="linkInput${doc.id}" type="url" placeholder="https://" value="${doc.data().link}">
+                                </div>
+                                <div>
+                                    <label for="iconSelect">Icon</label>
+                                    <select name="Icon" id="iconSelect${doc.id}">
+                                        <option value="fa-youtube">YouTube</option>
+                                        <option value="fa-linkedin-in">LinkedIn</option>
+                                        <option value="fa-instagram">Instagram</option>
+                                        <option value="fa-twitter-x">Twitter/X</option>
+                                        <option value="fa-github">GitHub</option>
+                                        <option value="fa-pinterest">Pinterest</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="targetSelect">Open In</label>
+                                    <select name="Target" id="targetSelect${doc.id}">
+                                        <option value="_self">Same tab</option>
+                                        <option value="_blank">New tab</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <button id="doc.id" class="singleLinkDelete fa fa-trash"></button>
+                                </div>
+                            </div>
+                        `
+                        let icon = doc.data().icon;
+                        let iconSelectID = "iconSelect" + doc.id;
+                        let target = doc.data().target;
+                        let targetSelectID = "targetSelect" + doc.id;
+                        setTimeout(() => {
+                            selectItemByValue(document.getElementById(iconSelectID), icon.toString())
+                            selectItemByValue(document.getElementById(targetSelectID), target.toString())
+
+                            document.querySelector('#socialButtonsSaveEdits').onclick = function () {
+                                const socialButtonsCollection = db.collection("socialButtons");
+                                socialButtonsCollection.get()
+                                    .then((querySnapshot) => {
+                                        querySnapshot.forEach((doc) => {
+                                            // doc.data() is never undefined for query doc snapshots
+                                            console.log(doc.id, " => ", doc.data());
+                                            let link = document.getElementById("linkInput" + doc.id).value;
+                                            let icon = document.getElementById("iconSelect" + doc.id).value;
+                                            let target = document.getElementById("targetSelect" + doc.id).value;
+                                            const socialButtonsDoc = socialButtonsCollection.doc(doc.id);
+                                            socialButtonsDoc.update({
+                                                link: link,
+                                                icon: icon,
+                                                target: target
+                                            })
+                                        });
+                                        document.querySelector('#socialButtonsEditModal').remove();
+                                    })
+                                    .catch((error) => {
+                                        console.log("Error getting documents: ", error);
+                                    });
+                            }
+                        }, 50)
+                    });
+                })
+                .catch((error) => {
+                    console.log("Error getting documents: ", error);
+                });
+        }
+
 
         const card1Content = document.querySelector('#card1Content');
         card1Content.addEventListener("mouseover", () => {
@@ -576,4 +683,56 @@ function setColours(textInput, backgroundInput, backgroundAccentInput, borderCol
     accentInput.addEventListener('change', () => {
         coloursSet();
     });
+}
+
+function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (document.getElementById(elmnt.id + "header")) {
+        /* if present, the header is where you move the DIV from:*/
+        document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+    } else {
+        /* otherwise, move the DIV from anywhere inside the DIV:*/
+        elmnt.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position:
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
+
+function selectItemByValue(elmnt, value){
+
+    for(var i=0; i < elmnt.options.length; i++)
+    {
+        if(elmnt.options[i].value === value) {
+            elmnt.selectedIndex = i;
+            break;
+        }
+    }
 }

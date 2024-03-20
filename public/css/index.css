@@ -319,6 +319,63 @@ main {
     margin-left: 15px;
 }
 
+#socialButtonsEditModal {
+    position: absolute;
+    background: whitesmoke;
+    border: 3px solid lightgrey;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#socialButtonsEditModalheader {
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-bottom: 3px solid lightgrey;
+    width: 100%;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+    cursor: move;
+}
+
+.singleLinkDiv {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 20px;
+    padding: 5px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    gap: 5px;
+}
+
+.singleLinkDiv div {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    flex-direction: column;
+}
+
+.singleLinkDiv input,
+.singleLinkDiv input:focus,
+.singleLinkDiv select,
+.singleLinkDiv option,
+.singleLinkDiv label,
+.singleLinkDiv .singleLinkDelete {
+    color: black;
+}
+
+#socialButtonsAddNew,
+#socialButtonsSaveEdits {
+    width: calc(100% - 40px);
+    color: black;
+    margin: 10px 0;
+}
+
 @media screen and (max-width: 800px) {
     #hero h1 {
         font-size: 34px;
