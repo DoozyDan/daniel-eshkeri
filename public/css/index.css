@@ -135,8 +135,8 @@ main {
 
 /*}*/
 
-#shade .container .card span .cardIcon,
-#shade .container .card-expand span .cardIcon {
+#shade .container .card .card-icon svg,
+#shade .container .card-expand .card-icon svg {
     max-width: calc(100% - 50px);
     max-height: 200px;
     margin: 25px 25px 0;
@@ -319,7 +319,8 @@ main {
     margin-left: 15px;
 }
 
-#socialButtonsEditModal {
+#socialButtonsEditModal,
+#cardIconEditModal {
     position: absolute;
     background: whitesmoke;
     border: 3px solid lightgrey;
@@ -330,7 +331,8 @@ main {
     flex-direction: column;
 }
 
-#socialButtonsEditModalheader {
+#socialButtonsEditModalheader,
+#cardIconEditModalheader {
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
     border-bottom: 3px solid lightgrey;
@@ -365,12 +367,16 @@ main {
 .singleLinkDiv select,
 .singleLinkDiv option,
 .singleLinkDiv label,
-.singleLinkDiv .singleLinkDelete {
+.singleLinkDiv .singleLinkDelete,
+#cardIconEditModal label,
+#cardIconEditModal input,
+#cardIconEditModal input:focus {
     color: black;
 }
 
 #socialButtonsAddNew,
-#socialButtonsSaveEdits {
+#socialButtonsSaveEdits,
+#cardIconSave {
     width: calc(100% - 40px);
     color: black;
     margin: 10px 0;

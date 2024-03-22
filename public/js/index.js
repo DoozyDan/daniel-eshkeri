@@ -104,6 +104,11 @@ document.addEventListener("DOMContentLoaded", event => {
     }).catch((error) => {
         console.log("Error getting document:", error);
     });
+    const card1IconRef = card1Collection.doc("cardIcon");
+    card1IconRef.onSnapshot((doc) => {
+        document.querySelector('#card1Icon').innerHTML = doc.data().svg;
+        document.querySelector('#card1IconExpanded').innerHTML = doc.data().svg;
+    })
 
     const card2Collection = db.collection("card2");
     const card2Heading = card2Collection.doc("heading");
@@ -134,6 +139,11 @@ document.addEventListener("DOMContentLoaded", event => {
     }).catch((error) => {
         console.log("Error getting document:", error);
     });
+    const card2IconRef = card2Collection.doc("cardIcon");
+    card2IconRef.onSnapshot((doc) => {
+        document.querySelector('#card2Icon').innerHTML = doc.data().svg;
+        document.querySelector('#card2IconExpanded').innerHTML = doc.data().svg;
+    })
 
     const card3Collection = db.collection("card3");
     const card3Heading = card3Collection.doc("heading");
@@ -164,6 +174,12 @@ document.addEventListener("DOMContentLoaded", event => {
     }).catch((error) => {
         console.log("Error getting document:", error);
     });
+    const card3IconRef = card3Collection.doc("cardIcon");
+    card3IconRef.onSnapshot((doc) => {
+        document.querySelector('#card3Icon').innerHTML = doc.data().svg;
+        document.querySelector('#card3IconExpanded').innerHTML = doc.data().svg;
+    })
+
 
 
     const cards = document.querySelectorAll('.card');
@@ -187,7 +203,6 @@ document.addEventListener("DOMContentLoaded", event => {
             });
         }
     }
-
 
     const cardExpands = document.querySelectorAll('.card-expand');
     const cardExpandContent = document.querySelectorAll('.card-expand-content');
@@ -347,19 +362,20 @@ function runEditMode() {
             socialButtonsContainer.style.cursor = "default";
         })
         socialButtonsContainer.onclick = function () {
-            socialButtonsContainer.insertAdjacentHTML("afterend", "<div id=\"socialButtonsEditModal\">\n" +
-                "                <div id=\"socialButtonsEditModalheader\">|||</div>\n" +
-                "                <div id=\"savedLinks\">\n" +
-                "                    \n" +
-                "                </div>\n" +
-                "                <button id=\"socialButtonsAddNew\">+</button>\n" +
-                "                <button id=\"socialButtonsSaveEdits\">Save</button>\n" +
-                "            </div>");
-            dragElement(document.getElementById("socialButtonsEditModal"))
-            const savedLinksDiv = document.querySelector('#savedLinks');
-            const socialButtonsCollection = db.collection("socialButtons");
-            socialButtonsCollection.get()
-                .then((querySnapshot) => {
+            if (!document.querySelector('#socialButtonsEditModal')) {
+                socialButtonsContainer.insertAdjacentHTML("afterend", "<div id=\"socialButtonsEditModal\">\n" +
+                    "                <div id=\"socialButtonsEditModalheader\">|||</div>\n" +
+                    "                <div id=\"savedLinks\">\n" +
+                    "                    \n" +
+                    "                </div>\n" +
+                    "                <button id=\"socialButtonsAddNew\">+</button>\n" +
+                    "                <button id=\"socialButtonsSaveEdits\">Save</button>\n" +
+                    "            </div>");
+                dragElement(document.getElementById("socialButtonsEditModal"))
+                const savedLinksDiv = document.querySelector('#savedLinks');
+                const socialButtonsCollection = db.collection("socialButtons");
+                socialButtonsCollection.onSnapshot((querySnapshot) => {
+                    savedLinksDiv.innerHTML = "";
                     querySnapshot.forEach((doc) => {
                         // doc.data() is never undefined for query doc snapshots
                         console.log(doc.id, " => ", doc.data());
@@ -388,7 +404,7 @@ function runEditMode() {
                                     </select>
                                 </div>
                                 <div>
-                                    <button id="doc.id" class="singleLinkDelete fa fa-trash"></button>
+                                    <button id="bin${doc.id}" class="singleLinkDelete fa fa-trash"></button>
                                 </div>
                             </div>
                         `
@@ -397,40 +413,122 @@ function runEditMode() {
                         let target = doc.data().target;
                         let targetSelectID = "targetSelect" + doc.id;
                         setTimeout(() => {
-                            selectItemByValue(document.getElementById(iconSelectID), icon.toString())
-                            selectItemByValue(document.getElementById(targetSelectID), target.toString())
+                            if (document.querySelector('#socialButtonsEditModal')) {
+                                selectItemByValue(document.getElementById(iconSelectID), icon.toString())
+                                selectItemByValue(document.getElementById(targetSelectID), target.toString())
 
-                            document.querySelector('#socialButtonsSaveEdits').onclick = function () {
-                                const socialButtonsCollection = db.collection("socialButtons");
-                                socialButtonsCollection.get()
-                                    .then((querySnapshot) => {
-                                        querySnapshot.forEach((doc) => {
-                                            // doc.data() is never undefined for query doc snapshots
-                                            console.log(doc.id, " => ", doc.data());
-                                            let link = document.getElementById("linkInput" + doc.id).value;
-                                            let icon = document.getElementById("iconSelect" + doc.id).value;
-                                            let target = document.getElementById("targetSelect" + doc.id).value;
-                                            const socialButtonsDoc = socialButtonsCollection.doc(doc.id);
-                                            socialButtonsDoc.update({
-                                                link: link,
-                                                icon: icon,
-                                                target: target
-                                            })
+                                document.querySelector('#socialButtonsSaveEdits').onclick = function () {
+                                    socialButtonsCollection.get()
+                                        .then((querySnapshot) => {
+                                            querySnapshot.forEach((doc) => {
+                                                // doc.data() is never undefined for query doc snapshots
+                                                console.log(doc.id, " => ", doc.data());
+                                                let link = document.getElementById("linkInput" + doc.id).value;
+                                                let icon = document.getElementById("iconSelect" + doc.id).value;
+                                                let target = document.getElementById("targetSelect" + doc.id).value;
+                                                const socialButtonsDoc = socialButtonsCollection.doc(doc.id);
+                                                socialButtonsDoc.update({
+                                                    link: link,
+                                                    icon: icon,
+                                                    target: target
+                                                })
+                                            });
+                                            document.querySelector('#socialButtonsEditModal').remove();
+                                        })
+                                        .catch((error) => {
+                                            console.log("Error getting documents: ", error);
                                         });
-                                        document.querySelector('#socialButtonsEditModal').remove();
+                                }
+
+                                document.querySelector('#socialButtonsAddNew').onclick = function () {
+                                    if (savedLinksDiv.childElementCount < 6) {
+                                        socialButtonsCollection.add({
+                                            icon: "",
+                                            link: "",
+                                            target: ""
+                                        })
+                                            .then((docRef) => {
+                                                console.log("Document written with ID: ", docRef.id);
+                                            })
+                                            .catch((error) => {
+                                                console.error("Error adding document: ", error);
+                                            });
+                                    } else {
+                                        alert("Max social buttons reached!")
+                                    }
+                                }
+
+                                document.querySelectorAll('.singleLinkDelete').forEach(item => {
+                                    item.addEventListener('click', () => {
+                                        const socialButtonsDoc = socialButtonsCollection.doc(item.id.split("bin").pop());
+                                        console.log(socialButtonsDoc)
+                                        socialButtonsDoc.delete().then(() => {
+                                            console.log("Document successfully deleted!");
+                                        }).catch((error) => {
+                                            console.error("Error removing document: ", error);
+                                        });
                                     })
-                                    .catch((error) => {
-                                        console.log("Error getting documents: ", error);
-                                    });
+                                });
                             }
                         }, 50)
                     });
                 })
-                .catch((error) => {
-                    console.log("Error getting documents: ", error);
-                });
+            }
         }
 
+        const cardIconsExpanded = document.querySelectorAll('.card-icon-expanded');
+        cardIconsExpanded.forEach((item, i) => {
+            item.addEventListener("mouseover", () => {
+                item.style.outline = "1px solid lightgrey";
+                item.style.cursor = "pointer";
+            })
+            item.addEventListener("mouseout", () => {
+                item.style.outline = "none";
+                item.style.cursor = "default";
+            })
+
+            item.onclick = function () {
+                console.log(item.parentNode.firstElementChild)
+                item.parentNode.firstElementChild.onclick = function () {
+                    if (document.querySelector('#cardIconEditModal')) {
+                        document.querySelector('#cardIconEditModal').remove();
+                    }
+                }
+                if (!document.querySelector('#cardIconEditModal')) {
+                    item.insertAdjacentHTML("afterend", "<div id=\"cardIconEditModal\">\n" +
+                        "                        <div id=\"cardIconEditModalheader\">|||</div>\n" +
+                        "                        <label for=\"svgInput\">Enter SVG Code</label>\n" +
+                        "                        <input type=\"text\" id=\"svgInput\">\n" +
+                        "                        <button id=\"cardIconSave\">Save</button>\n" +
+                        "                    </div>")
+                    dragElement(document.getElementById("cardIconEditModal"))
+                    console.log(i)
+                    let cardIndexRef = "card" + (i + 1)
+                    const cardCollection = db.collection(cardIndexRef);
+                    const cardIconRef = cardCollection.doc("cardIcon");
+                    const svgInput = document.getElementById("svgInput");
+                    cardIconRef.get().then((doc) => {
+                        if (doc.exists) {
+                            console.log("Document data:", doc.data());
+                            svgInput.value = doc.data().svg;
+                        } else {
+                            // doc.data() will be undefined in this case
+                            console.log("No such document!");
+                        }
+                    }).catch((error) => {
+                        console.log("Error getting document:", error);
+                    });
+
+                    document.querySelector('#cardIconSave').onclick = function () {
+                        const cardIconRef = cardCollection.doc("cardIcon");
+                        cardIconRef.update({
+                            svg: svgInput.value
+                        })
+                        document.querySelector('#cardIconEditModal').remove();
+                    }
+                }
+            }
+        });
 
         const card1Content = document.querySelector('#card1Content');
         card1Content.addEventListener("mouseover", () => {
@@ -452,6 +550,11 @@ function runEditMode() {
                     if (doc.exists) {
                         setTimeout(() => {
                             tinymce.get("card1TextArea").setContent(doc.data().html);
+                            if (tinymce.get("card1TextArea").getContent().length) {
+                                setTimeout(() => {
+                                    tinymce.get("card1TextArea").setContent(doc.data().html);
+                                }, 300)
+                            }
                         }, 300)
                         console.log("Document data:", doc.data());
                     } else {
@@ -484,6 +587,11 @@ function runEditMode() {
                     if (doc.exists) {
                         setTimeout(() => {
                             tinymce.get("card2TextArea").setContent(doc.data().html);
+                            if (tinymce.get("card2TextArea").getContent().length) {
+                                setTimeout(() => {
+                                    tinymce.get("card2TextArea").setContent(doc.data().html);
+                                }, 300)
+                            }
                         }, 300)
                         console.log("Document data:", doc.data());
                     } else {
@@ -516,6 +624,11 @@ function runEditMode() {
                     if (doc.exists) {
                         setTimeout(() => {
                             tinymce.get("card3TextArea").setContent(doc.data().html);
+                            if (tinymce.get("card3TextArea").getContent().length) {
+                                setTimeout(() => {
+                                    tinymce.get("card3TextArea").setContent(doc.data().html);
+                                }, 300)
+                            }
                         }, 300)
                         console.log("Document data:", doc.data());
                     } else {
