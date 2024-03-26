@@ -95,7 +95,13 @@ document.addEventListener("DOMContentLoaded", event => {
     const card1Content = card1Collection.doc("content");
     card1Content.get().then((doc) => {
         if (doc.exists) {
-            document.querySelector('#card1Content').innerHTML = doc.data().html;
+            if (doc.data().html.length === 0) {
+                document.querySelector('#card1Content').innerHTML = `
+                <p>This card has no content.</p>
+                `
+            } else {
+                document.querySelector('#card1Content').innerHTML = doc.data().html;
+            }
             console.log("Document data:", doc.data());
         } else {
             // doc.data() will be undefined in this case
@@ -130,7 +136,13 @@ document.addEventListener("DOMContentLoaded", event => {
     const card2Content = card2Collection.doc("content");
     card2Content.get().then((doc) => {
         if (doc.exists) {
-            document.querySelector('#card2Content').innerHTML = doc.data().html;
+            if (doc.data().html.length === 0) {
+                document.querySelector('#card2Content').innerHTML = `
+                <p>This card has no content.</p>
+                `
+            } else {
+                document.querySelector('#card2Content').innerHTML = doc.data().html;
+            }
             console.log("Document data:", doc.data());
         } else {
             // doc.data() will be undefined in this case
@@ -165,7 +177,13 @@ document.addEventListener("DOMContentLoaded", event => {
     const card3Content = card3Collection.doc("content");
     card3Content.get().then((doc) => {
         if (doc.exists) {
-            document.querySelector('#card3Content').innerHTML = doc.data().html;
+            if (doc.data().html.length === 0) {
+                document.querySelector('#card3Content').innerHTML = `
+                <p>This card has no content.</p>
+                `
+            } else {
+                document.querySelector('#card3Content').innerHTML = doc.data().html;
+            }
             console.log("Document data:", doc.data());
         } else {
             // doc.data() will be undefined in this case
@@ -499,6 +517,7 @@ function runEditMode() {
                         "                        <div id=\"cardIconEditModalheader\">|||</div>\n" +
                         "                        <label for=\"svgInput\">Enter SVG Code</label>\n" +
                         "                        <input type=\"text\" id=\"svgInput\">\n" +
+                        "                        <div id=\"svgPreview\"></div>\n" +
                         "                        <button id=\"cardIconSave\">Save</button>\n" +
                         "                    </div>")
                     dragElement(document.getElementById("cardIconEditModal"))
@@ -511,6 +530,10 @@ function runEditMode() {
                         if (doc.exists) {
                             console.log("Document data:", doc.data());
                             svgInput.value = doc.data().svg;
+                            document.querySelector('#svgPreview').innerHTML = svgInput.value;
+                            document.querySelector('#svgInput').onkeyup = function () {
+                                document.querySelector('#svgPreview').innerHTML = svgInput.value;
+                            }
                         } else {
                             // doc.data() will be undefined in this case
                             console.log("No such document!");

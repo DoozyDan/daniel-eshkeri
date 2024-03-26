@@ -329,6 +329,7 @@ main {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    z-index: 999;
 }
 
 #socialButtonsEditModalheader,
@@ -380,6 +381,10 @@ main {
     width: calc(100% - 40px);
     color: black;
     margin: 10px 0;
+}
+
+#svgPreview svg {
+    height: 300px;
 }
 
 @media screen and (max-width: 800px) {
