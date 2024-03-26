@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", event => {
                 <a href="${doc.data().link}" target="${doc.data().target}" class="fa-brands ${doc.data().icon}"></a>
             `
             });
-        })
+        });
 
     const card1Collection = db.collection("card1");
     const card1Heading = card1Collection.doc("heading");
