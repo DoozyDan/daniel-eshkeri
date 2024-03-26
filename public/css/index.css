@@ -330,6 +330,7 @@ main {
     align-items: center;
     flex-direction: column;
     z-index: 999;
+    min-width: 200px;
 }
 
 #socialButtonsEditModalheader,

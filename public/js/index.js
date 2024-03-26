@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", event => {
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
+            document.querySelector('#heroHeading').innerHTML = "Heading"
         }
     }).catch((error) => {
         console.log("Error getting document:", error);
@@ -431,10 +432,12 @@ function runEditMode() {
                         let target = doc.data().target;
                         let targetSelectID = "targetSelect" + doc.id;
                         setTimeout(() => {
+                            console.log("HEELO")
                             if (document.querySelector('#socialButtonsEditModal')) {
-                                selectItemByValue(document.getElementById(iconSelectID), icon.toString())
-                                selectItemByValue(document.getElementById(targetSelectID), target.toString())
-
+                                if (document.getElementById(iconSelectID) && document.getElementById(targetSelectID)) {
+                                    selectItemByValue(document.getElementById(iconSelectID), icon.toString())
+                                    selectItemByValue(document.getElementById(targetSelectID), target.toString())
+                                }
                                 document.querySelector('#socialButtonsSaveEdits').onclick = function () {
                                     socialButtonsCollection.get()
                                         .then((querySnapshot) => {
@@ -459,7 +462,8 @@ function runEditMode() {
                                 }
 
                                 document.querySelector('#socialButtonsAddNew').onclick = function () {
-                                    if (savedLinksDiv.childElementCount < 6) {
+
+                                    if (savedLinksDiv.childElementCount < 4) {
                                         socialButtonsCollection.add({
                                             icon: "",
                                             link: "",
