@@ -456,7 +456,7 @@ function runEditMode() {
                             }
                         }, 50)
                     });
-                })
+                });
                 setTimeout(() => {
                     if (document.querySelector('#socialButtonsEditModal')) {
                         document.querySelector('#socialButtonsSaveEdits').onclick = function () {
