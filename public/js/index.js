@@ -66,7 +66,11 @@ document.addEventListener("DOMContentLoaded", event => {
     const socialButtonsCollection = db.collection("socialButtons");
     const socialButtonsContainer = document.querySelector('#socialButtons');
     socialButtonsCollection.onSnapshot((querySnapshot) => {
-        socialButtonsContainer.innerHTML = ``;
+        if (querySnapshot.size === 0) {
+            socialButtonsContainer.innerHTML = `Add social buttons`;
+        } else {
+            socialButtonsContainer.innerHTML = ``;
+        }
             querySnapshot.forEach((doc) => {
                 // doc.data() is never undefined for query doc snapshots
                 console.log(doc.id, " => ", doc.data());
@@ -432,52 +436,10 @@ function runEditMode() {
                         let target = doc.data().target;
                         let targetSelectID = "targetSelect" + doc.id;
                         setTimeout(() => {
-                            console.log("HEELO")
                             if (document.querySelector('#socialButtonsEditModal')) {
                                 if (document.getElementById(iconSelectID) && document.getElementById(targetSelectID)) {
                                     selectItemByValue(document.getElementById(iconSelectID), icon.toString())
                                     selectItemByValue(document.getElementById(targetSelectID), target.toString())
-                                }
-                                document.querySelector('#socialButtonsSaveEdits').onclick = function () {
-                                    socialButtonsCollection.get()
-                                        .then((querySnapshot) => {
-                                            querySnapshot.forEach((doc) => {
-                                                // doc.data() is never undefined for query doc snapshots
-                                                console.log(doc.id, " => ", doc.data());
-                                                let link = document.getElementById("linkInput" + doc.id).value;
-                                                let icon = document.getElementById("iconSelect" + doc.id).value;
-                                                let target = document.getElementById("targetSelect" + doc.id).value;
-                                                const socialButtonsDoc = socialButtonsCollection.doc(doc.id);
-                                                socialButtonsDoc.update({
-                                                    link: link,
-                                                    icon: icon,
-                                                    target: target
-                                                })
-                                            });
-                                            document.querySelector('#socialButtonsEditModal').remove();
-                                        })
-                                        .catch((error) => {
-                                            console.log("Error getting documents: ", error);
-                                        });
-                                }
-
-                                document.querySelector('#socialButtonsAddNew').onclick = function () {
-
-                                    if (savedLinksDiv.childElementCount < 4) {
-                                        socialButtonsCollection.add({
-                                            icon: "",
-                                            link: "",
-                                            target: ""
-                                        })
-                                            .then((docRef) => {
-                                                console.log("Document written with ID: ", docRef.id);
-                                            })
-                                            .catch((error) => {
-                                                console.error("Error adding document: ", error);
-                                            });
-                                    } else {
-                                        alert("Max social buttons reached!")
-                                    }
                                 }
 
                                 document.querySelectorAll('.singleLinkDelete').forEach(item => {
@@ -495,6 +457,51 @@ function runEditMode() {
                         }, 50)
                     });
                 })
+                setTimeout(() => {
+                    if (document.querySelector('#socialButtonsEditModal')) {
+                        document.querySelector('#socialButtonsSaveEdits').onclick = function () {
+                            socialButtonsCollection.get()
+                                .then((querySnapshot) => {
+                                    querySnapshot.forEach((doc) => {
+                                        // doc.data() is never undefined for query doc snapshots
+                                        console.log(doc.id, " => ", doc.data());
+                                        let link = document.getElementById("linkInput" + doc.id).value;
+                                        let icon = document.getElementById("iconSelect" + doc.id).value;
+                                        let target = document.getElementById("targetSelect" + doc.id).value;
+                                        const socialButtonsDoc = socialButtonsCollection.doc(doc.id);
+                                        socialButtonsDoc.update({
+                                            link: link,
+                                            icon: icon,
+                                            target: target
+                                        })
+                                    });
+                                    document.querySelector('#socialButtonsEditModal').remove();
+                                })
+                                .catch((error) => {
+                                    console.log("Error getting documents: ", error);
+                                });
+                        }
+
+                        document.querySelector('#socialButtonsAddNew').onclick = function () {
+                            document.querySelector('#socialButtonsAddNew').remove();
+                            if (savedLinksDiv.childElementCount < 4) {
+                                socialButtonsCollection.add({
+                                    icon: "",
+                                    link: "",
+                                    target: ""
+                                })
+                                    .then((docRef) => {
+                                        console.log("Document written with ID: ", docRef.id);
+                                    })
+                                    .catch((error) => {
+                                        console.error("Error adding document: ", error);
+                                    });
+                            } else {
+                                alert("Max social buttons reached!")
+                            }
+                        }
+                    }
+                }, 50)
             }
         }
 
