@@ -322,8 +322,8 @@ main {
 #socialButtonsEditModal,
 #cardIconEditModal {
     position: absolute;
-    background: whitesmoke;
-    border: 3px solid lightgrey;
+    background: #000;
+    border: 3px solid #727272;
     border-radius: 15px;
     display: flex;
     justify-content: center;
@@ -331,15 +331,20 @@ main {
     flex-direction: column;
     z-index: 999;
     min-width: 200px;
+    color: white;
+}
+
+#socialButtonsEditModal label {
+    color: white;
 }
 
 #socialButtonsEditModalheader,
 #cardIconEditModalheader {
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
-    border-bottom: 3px solid lightgrey;
+    border-bottom: 3px solid #727272;
+    color: white;
     width: 100%;
-    color: black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -355,6 +360,7 @@ main {
     border: 1px solid lightgrey;
     border-radius: 5px;
     gap: 5px;
+    color:white;
 }
 
 .singleLinkDiv div {
