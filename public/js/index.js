@@ -582,10 +582,12 @@ function runEditMode() {
                 const card1ContentRef = card1Collection.doc("content");
                 card1ContentRef.get().then((doc) => {
                     if (doc.exists) {
-                        do  {
-                            console.log("DO WHILE RUN")
-                            tinymce.get("card1TextArea").setContent(doc.data().html);
-                        } while (tinymce.get("card1TextArea").getContent().length === 0)
+                        setTimeout(() => {
+                            do  {
+                                tinymce.get("card1TextArea").setContent(doc.data().html);
+                                console.log("DO WHILE RUN")
+                            } while (tinymce.get("card1TextArea").getContent().length === 0)
+                        }, 10)
                         // setTimeout(() => {
                             // tinymce.get("card1TextArea").setContent(doc.data().html);
                             // setTimeout(() => {
