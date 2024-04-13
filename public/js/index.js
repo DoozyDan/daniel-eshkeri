@@ -584,11 +584,11 @@ function runEditMode() {
                     if (doc.exists) {
                         setTimeout(() => {
                             tinymce.get("card1TextArea").setContent(doc.data().html);
-                            if (tinymce.get("card1TextArea").getContent().length) {
-                                setTimeout(() => {
+                            setTimeout(() => {
+                                if (!tinymce.get("card1TextArea").getContent().length) {
                                     tinymce.get("card1TextArea").setContent(doc.data().html);
-                                }, 300)
-                            }
+                                }
+                            }, 1000)
                         }, 300)
                         console.log("Document data:", doc.data());
                     } else {
@@ -621,11 +621,11 @@ function runEditMode() {
                     if (doc.exists) {
                         setTimeout(() => {
                             tinymce.get("card2TextArea").setContent(doc.data().html);
-                            if (tinymce.get("card2TextArea").getContent().length) {
-                                setTimeout(() => {
+                            setTimeout(() => {
+                                if (!tinymce.get("card2TextArea").getContent().length) {
                                     tinymce.get("card2TextArea").setContent(doc.data().html);
-                                }, 300)
-                            }
+                                }
+                            }, 1000)
                         }, 300)
                         console.log("Document data:", doc.data());
                     } else {
@@ -658,11 +658,11 @@ function runEditMode() {
                     if (doc.exists) {
                         setTimeout(() => {
                             tinymce.get("card3TextArea").setContent(doc.data().html);
-                            if (tinymce.get("card3TextArea").getContent().length) {
-                                setTimeout(() => {
+                            setTimeout(() => {
+                                if (!tinymce.get("card3TextArea").getContent().length) {
                                     tinymce.get("card3TextArea").setContent(doc.data().html);
-                                }, 300)
-                            }
+                                }
+                            }, 1000)
                         }, 300)
                         console.log("Document data:", doc.data());
                     } else {
