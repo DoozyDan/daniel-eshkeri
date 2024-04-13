@@ -583,19 +583,13 @@ function runEditMode() {
                 card1ContentRef.get().then((doc) => {
                     if (doc.exists) {
                         setTimeout(() => {
-                            do  {
-                                tinymce.get("card1TextArea").setContent(doc.data().html);
-                                console.log("DO WHILE RUN")
-                            } while (tinymce.get("card1TextArea").getContent().length === 0)
-                        }, 10)
-                        // setTimeout(() => {
-                            // tinymce.get("card1TextArea").setContent(doc.data().html);
-                            // setTimeout(() => {
-                            //     if (!tinymce.get("card1TextArea").getContent().length) {
-                            //         tinymce.get("card1TextArea").setContent(doc.data().html);
-                            //     }
-                            // }, 1000)
-                        // }, 300)
+                            tinymce.get("card1TextArea").setContent(doc.data().html);
+                            setTimeout(() => {
+                                if (!tinymce.get("card1TextArea").getContent().length) {
+                                    tinymce.get("card1TextArea").setContent(doc.data().html);
+                                }
+                            }, 1000)
+                        }, 300)
                         console.log("Document data:", doc.data());
                     } else {
                         // doc.data() will be undefined in this case
