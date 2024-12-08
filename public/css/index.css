@@ -272,12 +272,14 @@ main {
     border-bottom: 1px solid #888888;
 }
 
-.text-link {
+.text-link,
+.card-expand-content a {
     color: var(--accent);
     transition: 200ms ease;
 }
 
-.text-link:hover {
+.text-link:hover,
+.card-expand-content a:hover {
     color: var(--link-hover);
 }
 
